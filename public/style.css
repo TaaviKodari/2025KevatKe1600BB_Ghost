@@ -59,7 +59,7 @@ button{
 
 #game-board{
     display: grid;
-    gap: 0x;
+    gap: 0px;
     background-image: url('images/background.png');
     background-size: cover;
     background-position: center;
