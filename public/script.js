@@ -1,6 +1,7 @@
 const BOARD_SIZE = 20;
 const cellSize = calculateCellSize();
 let board;
+let player;
 
 document.getElementById('new-game-btn').addEventListener('click',startGame);
 
@@ -28,6 +29,9 @@ function generateRandomBoard(){
     console.log(newBoard);
     generateObstacles(newBoard);
     
+    const [playerX, playerY] = randomEmptyPosition(newBoard);
+    setCell(newBoard,playerX, playerY, 'P');
+
     return newBoard;
 }
 
@@ -43,6 +47,8 @@ function drawBoard(board){
             cell.style.height = cellSize + "px";
             if(getCell(board,x,y) === 'W'){
                 cell.classList.add('wall');
+            }else if(getCell(board,x,y) === 'P'){
+                cell.classList.add('player');
             }
 
             gameBoard.appendChild(cell);
@@ -87,5 +93,34 @@ function placeObstacle(board, obstacle, startX, startY){
     for(coordinatePair of obstacle){
         [x,y] = coordinatePair;
         board[startY + y][startX + x] = 'W';
+    }
+}
+
+function randomInt(min,max){
+    return Math.floor(Math.random() * (max-min + 1)) +min;
+}
+
+function randomEmptyPosition(board){
+    x = randomInt(1,BOARD_SIZE - 2);
+    y = randomInt(1,BOARD_SIZE - 2);
+    if(getCell(board, x, y) === ''){
+        return [x,y];
+    }
+    else{
+        return randomEmptyPosition(board);
+    }
+}
+
+function setCell(board, x, y, value){
+    board[y][x] = value;
+}
+
+class Player{
+    constructor(x,y){
+        this.x = x;
+        this.y = y;
+    }
+    move(deltaX, deltaY){
+        
     }
 }
