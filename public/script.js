@@ -2,13 +2,36 @@ const BOARD_SIZE = 20;
 const cellSize = calculateCellSize();
 let board;
 let player;
+let ghosts = [];
 
 document.getElementById('new-game-btn').addEventListener('click',startGame);
+document.addEventListener('keydown', (event)=>{
+    switch(event.key){
+        case 'ArrowUp':
+            player.move(0,-1); //liikutaan ylöspäin
+        break;
+
+        case 'ArrowDown':
+            player.move(0,1);
+        break;
+
+        case 'ArrowLeft':
+            player.move(-1, 0);
+        break;
+
+        case 'ArrowRight':
+            player.move(1,0);
+        break;
+    }
+    event.preventDefault();
+})
 
 function startGame(){
     console.log('Klikattu');
     document.getElementById('intro-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block'
+
+    player = new Player(0,0);
 
     board = generateRandomBoard();
 
@@ -31,6 +54,12 @@ function generateRandomBoard(){
     
     const [playerX, playerY] = randomEmptyPosition(newBoard);
     setCell(newBoard,playerX, playerY, 'P');
+    player.x = playerX;
+    player.y = playerY;
+
+    for(let i = 0; i < 5; i++){
+        const [ghostX, ghostY] = randomEmptyPosition(newBoard);
+    }
 
     return newBoard;
 }
@@ -38,6 +67,7 @@ function generateRandomBoard(){
 function drawBoard(board){
     const gameBoard = document.getElementById('game-board');
     gameBoard.style.gridTemplateColumns = `repeat(${BOARD_SIZE},1fr)`;
+    gameBoard.innerHTML = "";
 
     for(let y = 0; y < BOARD_SIZE; y++){
         for(let x = 0; x < BOARD_SIZE; x++){
@@ -122,5 +152,32 @@ class Player{
     }
     move(deltaX, deltaY){
         
+        //missä pelaaja on tällä hetkellä
+        const currentX = player.x;
+        const currentY = player.y;
+
+        //Uusi sijainti pelaajalle
+        const newX = currentX + deltaX;
+        const newY = currentY + deltaY;
+
+        if(getCell(board, newX, newY) === ''){
+            //Annetaan pelaajalle uusi sijainti
+            player.x = newX;
+            player.y = newY;
+    
+            //Poistetaan vanha pelaaja pelilaudalta
+            setCell(board,currentX, currentY,'');
+            //Asetetaan pelaaja pelilaudalle
+            setCell(board,newX,newY,'P');
+            //piirretään pelilauta uusiksi
+            drawBoard(board);
+        }
+    }
+}
+
+class Ghost{
+    constructor(x,y){
+        this.x = x;
+        this.y = y;
     }
 }
