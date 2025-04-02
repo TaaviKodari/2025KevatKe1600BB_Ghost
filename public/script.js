@@ -22,6 +22,10 @@ document.addEventListener('keydown', (event)=>{
         case 'ArrowRight':
             player.move(1,0);
         break;
+
+        case 'w':
+            shootAt(player.x,player.y -1);
+        break;
     }
     event.preventDefault();
 })
@@ -59,6 +63,7 @@ function generateRandomBoard(){
 
     for(let i = 0; i < 5; i++){
         const [ghostX, ghostY] = randomEmptyPosition(newBoard);
+        setCell(newBoard,ghostX, ghostY,'G');
     }
 
     return newBoard;
@@ -77,8 +82,15 @@ function drawBoard(board){
             cell.style.height = cellSize + "px";
             if(getCell(board,x,y) === 'W'){
                 cell.classList.add('wall');
-            }else if(getCell(board,x,y) === 'P'){
+            }
+            else if(getCell(board,x,y) === 'P'){
                 cell.classList.add('player');
+            }
+            else if(getCell(board,x,y) === 'G'){
+                cell.classList.add('ghost');
+            }
+            else if(getCell(board,x,y)==='B'){
+                cell.classList.add('bullet');
             }
 
             gameBoard.appendChild(cell);
@@ -143,6 +155,14 @@ function randomEmptyPosition(board){
 
 function setCell(board, x, y, value){
     board[y][x] = value;
+}
+
+function shootAt(x,y){
+    if(getCell(board,x,y) === 'W'){
+        return;
+    }
+    setCell(board,x,y,'B');
+    drawBoard(board);
 }
 
 class Player{

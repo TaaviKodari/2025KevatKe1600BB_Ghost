@@ -88,3 +88,13 @@ button{
     background-image: url('images/player.png');
     background-size: cover;
 }
+
+.ghost{
+    background-image: url('images/ghost.png');
+    background-size: cover;
+}
+
+.bullet{
+    background-color: red;
+    border-radius: 50%;
+}
