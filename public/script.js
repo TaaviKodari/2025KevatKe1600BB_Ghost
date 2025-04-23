@@ -4,9 +4,14 @@ let board;
 let player;
 let ghosts = [];
 let ghostSpeed = 1000;
+let isGameRunning = false;
+let ghostInterval;
 
 document.getElementById('new-game-btn').addEventListener('click',startGame);
 document.addEventListener('keydown', (event)=>{
+    if(!isGameRunning){
+        return;
+    }
     switch(event.key){
         case 'ArrowUp':
             player.move(0,-1); //liikutaan ylöspäin
@@ -46,7 +51,7 @@ document.addEventListener('keydown', (event)=>{
 function startGame(){
     console.log('Klikattu');
     document.getElementById('intro-screen').style.display = 'none';
-    document.getElementById('game-screen').style.display = 'block'
+    document.getElementById('game-screen').style.display = 'block';
 
     player = new Player(0,0);
 
@@ -54,7 +59,11 @@ function startGame(){
 
     drawBoard(board);
 
-    setInterval(moveGhosts,ghostSpeed);
+    setTimeout(()=>{
+        ghostInterval = setInterval(moveGhosts,ghostSpeed);
+    }, 1000);
+
+    isGameRunning = true;
 }
 
 function generateRandomBoard(){
@@ -75,7 +84,8 @@ function generateRandomBoard(){
     setCell(newBoard,playerX, playerY, 'P');
     player.x = playerX;
     player.y = playerY;
-
+    
+    ghosts = [];
     for(let i = 0; i < 5; i++){
         const [ghostX, ghostY] = randomEmptyPosition(newBoard);
         setCell(newBoard,ghostX, ghostY,'G');
@@ -192,7 +202,7 @@ function shootAt(x,y){
     drawBoard(board);
 
     if(ghosts.length === 0){
-        alert('Kaikki kummitukset on voitettu!');
+        endGame();
     }
 }
 
@@ -214,13 +224,22 @@ function moveGhosts(){
             setCell(board,ghost.x,ghost.y,'G');
         });
 
+        
         drawBoard(board);
+        
+        if(ghost.x === player.x && ghost.y === player.y){
+            endGame();
+            return;
+        }
     });
 }
 
 function endGame(){
+    isGameRunning = false;
     alert('Game Over!');
-    
+    document.getElementById('intro-screen').style.display = 'block';
+    document.getElementById('game-screen').style.display = 'none';
+    clearInterval(ghostInterval);
 }
 
 class Player{
