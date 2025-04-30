@@ -6,6 +6,7 @@ let ghosts = [];
 let ghostSpeed = 1000;
 let isGameRunning = false;
 let ghostInterval;
+let score = 0;
 
 document.getElementById('new-game-btn').addEventListener('click',startGame);
 document.addEventListener('keydown', (event)=>{
@@ -64,6 +65,8 @@ function startGame(){
     }, 1000);
 
     isGameRunning = true;
+    score = 0;
+    updateScoreBoard(0);
 }
 
 function generateRandomBoard(){
@@ -196,6 +199,7 @@ function shootAt(x,y){
 
     if(ghostIndex !== -1){
         ghosts.splice(ghostIndex,1);
+        updateScoreBoard(50);
     }
 
     setCell(board,x,y,'B');
@@ -240,6 +244,16 @@ function endGame(){
     document.getElementById('intro-screen').style.display = 'block';
     document.getElementById('game-screen').style.display = 'none';
     clearInterval(ghostInterval);
+}
+
+function updateScoreBoard(points){
+    const scoreBoard = document.getElementById('score-board');
+    score += points;
+    scoreBoard.textContent = `Pisteet: ${score}`;
+}
+
+function startNextLevel(){
+    alert('Level up! Haamujen nopeus kasvaa!');
 }
 
 class Player{
