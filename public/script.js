@@ -254,6 +254,7 @@ function updateScoreBoard(points){
 
 function startNextLevel(){
     alert('Level up! Haamujen nopeus kasvaa!');
+    
 }
 
 class Player{
